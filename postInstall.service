@@ -1,0 +1,11 @@
+[Unit]
+Description=Post install script executing
+After=network.target
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=ati
+ExecStart=/postinstall/yay.sh
+[Install]
+WantedBy=multi-user.target
