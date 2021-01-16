@@ -1,29 +1,77 @@
 #!/bin/bash
 
-### Kommenteld ki a megfelelőt ###
-				##
-kvm="igen"			##
-#kvm="nem"			##
-user="ati"			##
-host="sophia"			##
-				##
-ucode=amd-ucode			##
-#ucode=intel-ucode		##
-				##
-##################################
-if [ $kvm == "igen" ]
+###	Please uncomment and/or overwrite the lines You need	###
+								###
+KVM="true"							###
+#KVM="false"							###
+								###
+MYUSER="ati"							###
+MYHOST="sophia"							###
+								###
+UCODE=amd-ucode							###
+#UCODE=intel-ucode						###
+								###
+###################################################################
+if [ $KVM == "true" ]
 then
-	drivePath="/dev/vda"
+	DRIVEPATH="/dev/vda"
 
 else
-	drivePath="/dev/sda"
+	DRIVEPATH="/dev/sda"
 fi
 
+#
+##
+###
+####------------------------
+#Installing the BASE SYSTEM ------------------------------------------------------
 
-if [ "$(stat -c %d:%i /)" != "$(stat -c %d:%i /proc/1/root/.)" ]
+if [ "$(stat -c %d:%i /)" == "$(stat -c %d:%i /proc/1/root/.)" ]
 then
-    
-    if [ $kvm == "nem" ]
+	timedatectl set-ntp true
+
+	parted -s $DRIVEPATH \
+	mklabel gpt \
+	mkpart primary fat32 1 1G \
+	mkpart primary ext4 1G 100% \
+	set 1 boot on \
+	#   mkpart primary ext4 10G 100% \
+
+	mkfs.fat -F32 /dev/vda1
+	mkfs.ext4 /dev/vda2
+
+	mount "$DRIVEPATH"2 /mnt
+	mkdir /mnt/boot
+	mkdir /mnt/postinstall
+	mount "$DRIVEPATH"1 /mnt/boot
+
+	ln -sf /usr/share/zoneinfo/Europe/Budapest /etc/localtime
+	hwclock --systohc
+	
+	if [ $KVM == "true" ]
+	then
+		pacstrap /mnt base linux linux-firmware $UCODE base-devel networkmanager network-manager-applet ntfs-3g efibootmgr xf86-video-qxl git vim
+	else
+		pacstrap /mnt base linux linux-firmware $UCODE base-devel networkmanager network-manager-applet ntfs-3g efibootmgr bluez bluez-utils git vim
+
+	fi 
+	
+	genfstab -U /mnt >> /mnt/etc/fstab
+	cp $0 /mnt/Arch_install.sh
+	
+	# Utólagos installhoz szükséges fájlok másolása ----------------------
+	cp utils/postInstall.sh /mnt/postinstall
+	cp utils/postInstall.service /mnt/postinstall
+
+
+	arch-chroot /mnt ./Arch_install.sh chroot
+
+else
+	#
+	##
+	###---------
+	#### CHROOT ---------------------------------------------------------------------------------------
+	if [ $KVM == "nem" ]
     then
         ##Merevlemezek felcsatolása
         mkdir /mnt/Base
@@ -47,12 +95,12 @@ then
     locale-gen
     echo "LANG=hu_HU.UTF-8" >> /etc/locale.conf
     echo "KEYMAP=hu" >> /etc/vconsole.conf
-    echo $host >> /etc/hostname
+    echo $MYHOST >> /etc/hostname
     echo "127.0.0.1	localhost" >> /etc/hosts
     echo "::1		localhost" >> /etc/hosts
-    echo "127.0.1.1	"$host".localdomain"  $host >> /etc/hosts
+    echo "127.0.1.1	"$MYHOST".localdomain"  $MYHOST >> /etc/hosts
 
-    if [ $kvm == "igen" ]
+    if [ $KVM == "true" ]
     then
 	    systemctl enable NetworkManager
     else
@@ -77,64 +125,28 @@ then
     echo "default	arch-*" >> /boot/loader/loader.conf
     echo "title     Arch Linux" >> /boot/loader/entries/arch.conf
     echo "linux     /vmlinuz-linux" >> /boot/loader/entries/arch.conf
-    echo "initrd    /"$ucode".img" >> /boot/loader/entries/arch.conf
+    echo "initrd    /"$UCODE".img" >> /boot/loader/entries/arch.conf
     echo "initrd    /initramfs-linux.img" >> /boot/loader/entries/arch.conf
     echo "options   root=/dev/vda2 rw" >> /boot/loader/entries/arch.conf
     systemctl enable NetworkManager
 
     clear
     echo ""
-    echo "### Kérlek hozd létre "$user" jelszavát ###"
+    echo "### Kérlek hozd létre "$MYUSER" jelszavát ###"
     echo ""
-    useradd -mG wheel $user
-    passwd $user
+    useradd -mG wheel $MYUSER
+    passwd $MYUSER
     #EDITOR=vim visudo
 
     #--- Utólagos programok installálása ------------------------------------------
 
     mv /postinstall/postInstall.service /etc/systemd/system
-    chmod +x /postinstall/yay.sh
+    chmod +x /postinstall/postInstall.sh
     systemctl enable postInstall.service
     systemctl enable systemd-homed
     #sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
     sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-else
-	timedatectl set-ntp true
-
-	parted -s $drivePath \
-	mklabel gpt \
-	mkpart primary fat32 1 1G \
-	mkpart primary ext4 1G 100% \
-	set 1 boot on \
-	#   mkpart primary ext4 10G 100% \
-
-	mkfs.fat -F32 /dev/vda1
-	mkfs.ext4 /dev/vda2
-
-	mount "$drivePath"2 /mnt
-	mkdir /mnt/boot
-	mkdir /mnt/postinstall
-	mount "$drivePath"1 /mnt/boot
-
-	ln -sf /usr/share/zoneinfo/Europe/Budapest /etc/localtime
-	hwclock --systohc
-	
-	if [ $kvm == "igen" ]
-	then
-		pacstrap /mnt base linux linux-firmware $ucode base-devel networkmanager network-manager-applet ntfs-3g efibootmgr xf86-video-qxl git vim
-	else
-		pacstrap /mnt base linux linux-firmware $ucode base-devel networkmanager network-manager-applet ntfs-3g efibootmgr bluez bluez-utils git vim
-
-	fi 
-	
-	genfstab -U /mnt >> /mnt/etc/fstab
-	cp $0 /mnt/Arch_install.sh
-	
-	# Utólagos installhoz szükséges fájlok másolása ----------------------
-	cp utils/yay.sh /mnt/postinstall
-	cp utils/postInstall.service /mnt/postinstall
 
 
-	arch-chroot /mnt ./Arch_install.sh chroot
 fi
 reboot
