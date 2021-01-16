@@ -146,6 +146,15 @@ else
     systemctl enable systemd-homed
     #sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
     sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+    
+    
+    #
+    ##
+    ###
+    #### desktop -----------------------------------------------------------------------
+    sudo pacman -S xorg --noconfirm
+    sudo pacman -S  sudo pacman -S gnome-shell gdm gnome-control-center gnome-shell-extensions gnome-tweaks gnome-menus --noconfirm
+    sudo systemctl enable gdm
 
 
 fi
