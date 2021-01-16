@@ -60,8 +60,8 @@ then
 	cp $0 /mnt/Arch_install.sh
 	
 	# Utólagos installhoz szükséges fájlok másolása ----------------------
-	cp utils/postInstall.sh /mnt/postinstall
-	cp utils/postInstall.service /mnt/postinstall
+	cp archis/postInstall.sh /mnt/postinstall
+	cp archis/postInstall.service /mnt/postinstall
 
 
 	arch-chroot /mnt ./Arch_install.sh chroot
