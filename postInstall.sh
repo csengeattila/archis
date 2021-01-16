@@ -9,3 +9,4 @@ cd /opt/yay-git && makepkg -si --noconfirm
 
 sudo pacman -S xorg --noconfirm
 sudo pacman -S  sudo pacman -S gnome-shell gdm gnome-control-center gnome-shell-extensions gnome-tweaks gnome-menus --noconfirm
+sudo systemctl enable gdm
