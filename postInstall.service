@@ -6,6 +6,6 @@ Type=simple
 Restart=always
 RestartSec=1
 User=ati
-ExecStart=/postinstall/postinstall.sh
+ExecStart=/postinstall/postInstall.sh
 [Install]
 WantedBy=multi-user.target
