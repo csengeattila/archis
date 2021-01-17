@@ -114,7 +114,7 @@ else
 	
     clear
     echo ""
-    echo "### Kérlek írd be az új ROOT jelszót! ###"
+    echo "### Please type the ROOT password ###"
     echo ""
     echo ""
     passwd
@@ -132,37 +132,43 @@ else
 
     clear
     echo ""
-    echo "### Kérlek hozd létre "$MYUSER" jelszavát ###"
+    echo "### Please type "$MYUSER"s password ###"
     echo ""
     useradd -mG wheel $MYUSER
     passwd $MYUSER
     #EDITOR=vim visudo
-
-    #--- Utólagos programok installálása ------------------------------------------
-
-    mv /postinstall/postInstall.service /etc/systemd/system
-    chmod +x /postinstall/postInstall.sh
-    systemctl enable postInstall.service
     #sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
     sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-    
-    
-    #
-    ##
-    ###
-    #### desktop -----------------------------------------------------------------------
-    pacman -S xorg --noconfirm
-    pacman -S xorg-xinit --noconfirm
-    pacman -S bspwm --noconfirm
-    pacman -S sxhkd --noconfirm
-    pacman -S nitrogen --noconfirm
-    pacman -S picom --noconfirm
-    pacman -S arandr --noconfirm
-    pacman -S tilix --noconfirm
-    pacman -S chromium --noconfirm
-    pacman -S lightdm --noconfirm
 
-    systemctl enable lightdm
+    # preparing to post install -----------------------------------------------------
+    mv /postinstall/postInstall.service /etc/systemd/system
+    chmod +x /postinstall/postInstall.sh
+    #systemctl enable postInstall.service
+    cp /usr/lib/systemd/system/getty@.service /etc/systemd/system/autologin@.service
+    sed -i 's/ExecStart=/#original# ExecStart=/' /etc/systemd/system/autologin@.service
+    sed -i '38i\ExecStart=-/sbin/agetty -a $USER %I 38400' /etc/systemd/system/autologin@.service
+    systemctl daemon-reload
+    systemctl start getty@tty1.service
+    
 
 fi
-reboot
+
+clear
+echo "Please select!"
+echo ""
+echo ""
+echo " Shutdown: press any key then enter"
+echo " Restart: just press enter"
+echo ""
+echo ""
+echo ""
+read -p "Restart or Shutdown? " PROGRAMEND
+
+if [ $PROGRAMEND  ]
+then
+	shutdown now
+else
+	reboot
+fi
+
+
