@@ -143,7 +143,6 @@ else
     mv /postinstall/postInstall.service /etc/systemd/system
     chmod +x /postinstall/postInstall.sh
     systemctl enable postInstall.service
-    systemctl enable systemd-homed
     #sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
     sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
     
@@ -152,10 +151,18 @@ else
     ##
     ###
     #### desktop -----------------------------------------------------------------------
-    sudo pacman -S xorg --noconfirm
-    sudo pacman -S  sudo pacman -S gnome-shell gdm gnome-control-center gnome-shell-extensions gnome-tweaks gnome-menus --noconfirm
-    sudo systemctl enable gdm
+    pacman -S xorg --noconfirm
+    pacman -S xorg-xinit --noconfirm
+    pacman -S bspwm --noconfirm
+    pacman -S sxhkd --noconfirm
+    pacman -S nitrogen --noconfirm
+    pacman -S picom --noconfirm
+    pacman -S arandr --noconfirm
+    pacman -S tilix --noconfirm
+    pacman -S chromium --noconfirm
+    pacman -S lightdm --noconfirm
 
+    systemctl enable lightdm
 
 fi
 reboot
