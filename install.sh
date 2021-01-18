@@ -56,7 +56,7 @@ then
 	cp archis/postInstall.service /mnt/postinstall
 	
 	# Go into the chroot
-	arch-chroot /mnt ./setup.sh chroot
+	arch-chroot /mnt ./install.sh chroot
 
 
 
