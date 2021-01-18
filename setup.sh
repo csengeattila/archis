@@ -22,6 +22,7 @@ sed -i 's/KVM=nokvm/KVM='$KVM'/ archis/install.sh
 sed -i 's/MYUSER=nouser/MYUSER='$MYUSER'/ archis/install.sh
 sed -i 's/MYHOST=nohost/MYHOST='$MYHOST'/ archis/install.sh
 sed -i 's/UCODE=noucode/UCODE='$UCODE'/ archis/install.sh
-sed -i 's/dummyusername/MYUSER='$MYUSER'/ archis/install.sh
+sed -i 's/dummyusername/'$MYUSER'/ archis/install.sh
 
+chmod +x archis/install.sh
 archis/install.sh
