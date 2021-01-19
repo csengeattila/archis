@@ -143,7 +143,7 @@ else
     sed -i 's/ExecStart=/#original# ExecStart=/' /etc/systemd/system/autologin@.service
     sed -i '38i\ExecStart=-/sbin/agetty -a dummyusername %I 38400' /etc/systemd/system/autologin@.service
     systemctl daemon-reload
-    systemctl start autologin@
+    systemctl enable autologin@
     
 
 fi
