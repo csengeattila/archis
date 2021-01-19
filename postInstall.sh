@@ -11,14 +11,14 @@ cd /opt/yay-git && makepkg -si --noconfirm
 ##
 ###
 #### desktop -----------------------------------------------------------------------
-pacman -S xorg --noconfirm
-pacman -S xorg-xinit --noconfirm
-pacman -S bspwm --noconfirm
-pacman -S sxhkd --noconfirm
-pacman -S nitrogen --noconfirm
-pacman -S picom --noconfirm
-pacman -S arandr --noconfirm
-pacman -S tilix --noconfirm
-pacman -S chromium --noconfirm
+#pacman -S xorg --noconfirm
+#pacman -S xorg-xinit --noconfirm
+#pacman -S bspwm --noconfirm
+#pacman -S sxhkd --noconfirm
+#pacman -S nitrogen --noconfirm
+#pacman -S picom --noconfirm
+#pacman -S arandr --noconfirm
+#pacman -S tilix --noconfirm
+#pacman -S chromium --noconfirm
 
 
