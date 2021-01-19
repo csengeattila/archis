@@ -141,11 +141,15 @@ else
     #systemctl enable postInstall.service
 
     # autologin service -------------------------------------------------------------
-    cp /usr/lib/systemd/system/getty@.service /etc/systemd/system/autologin@.service
-    sed -i 's/ExecStart=/#original# ExecStart=/' /etc/systemd/system/autologin@.service
-    sed -i 's/TTYReset=yes/TTYReset=no/' /etc/systemd/system/autologin@.service
-    sed -i '38i\ExecStart=-/sbin/agetty -a dummyusername %I 38400' /etc/systemd/system/autologin@.service
-    systemctl enable autologin@
+     /usr/lib/systemd/system/getty@.service 
+    sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
+    sed -i '38i\ExecStart=-/sbin/agetty -i -a dummyusername %I $TERM' /usr/lib/systemd/system/getty@.service 
+
+    #cp /usr/lib/systemd/system/getty@.service /etc/systemd/system/autologin@.service
+    #sed -i 's/ExecStart=/#original# ExecStart=/' /etc/systemd/system/autologin@.service
+    #sed -i 's/TTYReset=yes/TTYReset=no/' /etc/systemd/system/autologin@.service
+    #sed -i '38i\ExecStart=-/sbin/agetty -a dummyusername %I 38400' /etc/systemd/system/autologin@.service
+    #systemctl enable autologin@
     
 
 fi
