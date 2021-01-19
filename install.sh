@@ -139,10 +139,12 @@ else
     mv /postinstall/postInstall.service /etc/systemd/system
     chmod +x /postinstall/postInstall.sh
     #systemctl enable postInstall.service
+
+    # autologin service -------------------------------------------------------------
     cp /usr/lib/systemd/system/getty@.service /etc/systemd/system/autologin@.service
     sed -i 's/ExecStart=/#original# ExecStart=/' /etc/systemd/system/autologin@.service
+    sed -i 's/TTYReset=yes/TTYReset=no/' /etc/systemd/system/autologin@.service
     sed -i '38i\ExecStart=-/sbin/agetty -a dummyusername %I 38400' /etc/systemd/system/autologin@.service
-    systemctl daemon-reload
     systemctl enable autologin@
     
 
