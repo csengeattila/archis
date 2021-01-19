@@ -53,7 +53,6 @@ then
 	
 	# Things need to postinstall -----------------------------
 	cp archis/postInstall.sh /mnt/postinstall
-	cp archis/postInstall.service /mnt/postinstall
 	
 	# Go into the chroot
 	arch-chroot /mnt ./install.sh chroot
@@ -138,19 +137,18 @@ else
     # preparing to post install -----------------------------------------------------
     mv /postinstall/postInstall.service /etc/systemd/system
     chmod +x /postinstall/postInstall.sh
-    #systemctl enable postInstall.service
 
-    # autologin service -------------------------------------------------------------
+    # Autologin service -------------------------------------------------------------
      /usr/lib/systemd/system/getty@.service 
     sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
     sed -i '38i\ExecStart=-/sbin/agetty -i -a dummyusername %I $TERM' /usr/lib/systemd/system/getty@.service 
 
-    #cp /usr/lib/systemd/system/getty@.service /etc/systemd/system/autologin@.service
-    #sed -i 's/ExecStart=/#original# ExecStart=/' /etc/systemd/system/autologin@.service
-    #sed -i 's/TTYReset=yes/TTYReset=no/' /etc/systemd/system/autologin@.service
-    #sed -i '38i\ExecStart=-/sbin/agetty -a dummyusername %I 38400' /etc/systemd/system/autologin@.service
-    #systemctl enable autologin@
-    
+    # executing the postInstall script
+    cp /postinstall/postInstall.sh /home/dummyusername
+    chmod +x /home/dummyusername/postInstall.sh
+
+    echo "/postinstall/postInstall.sh" >> ~.bashrc
+
 
 fi
 #
