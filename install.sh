@@ -172,9 +172,9 @@ read -p "Restart or Shutdown? " PROGRAMEND
 
 if [ $PROGRAMEND  ]
 then
-	shutdown now
+	#shutdown now
 else
-	reboot
+	#reboot
 fi
 
 
