@@ -150,7 +150,7 @@ else
     #echo "/postinstall/postInstall.sh" >> ~.bashrc
 
     cd /opt && sudo git clone https://aur.archlinux.org/yay-git.git
-    #chown -R $USER:$USER /opt/yay-git
+    chown -R dummyusername:dummyusername /opt/yay-git
     cd /opt/yay-git && makepkg -si --noconfirm
 
 
@@ -172,9 +172,9 @@ read -p "Restart or Shutdown? " PROGRAMEND
 
 if [ $PROGRAMEND  ]
 then
-	#shutdown now
+	shutdown now
 else
-	#reboot
+	reboot
 fi
 
 
