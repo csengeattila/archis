@@ -147,7 +147,11 @@ else
     cp /postinstall/postInstall.sh /home/dummyusername
     chmod +x /home/dummyusername/postInstall.sh
 
-    echo "/postinstall/postInstall.sh" >> ~.bashrc
+    #echo "/postinstall/postInstall.sh" >> ~.bashrc
+
+    cd /opt && sudo git clone https://aur.archlinux.org/yay-git.git
+    #chown -R $USER:$USER /opt/yay-git
+    cd /opt/yay-git && makepkg -si --noconfirm
 
 
 fi
