@@ -141,17 +141,14 @@ else
     # Autologin service -------------------------------------------------------------
      /usr/lib/systemd/system/getty@.service 
     sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
-    sed -i '38i\ExecStart=-/sbin/agetty -i -a dummyusername %I $TERM' /usr/lib/systemd/system/getty@.service 
+    sed -i '38i\ExecStart=-/sbin/agetty -i -a '$MYUSER' %I $TERM' /usr/lib/systemd/system/getty@.service 
 
-    # executing the postInstall script
-    cp /postinstall/postInstall.sh /home/dummyusername
-    chmod +x /home/dummyusername/postInstall.sh
 
     #echo "/postinstall/postInstall.sh" >> ~.bashrc
 
     cd /opt && sudo git clone https://aur.archlinux.org/yay-git.git
-    chown -R dummyusername:dummyusername /opt/yay-git
-    cd /opt/yay-git && makepkg -si --noconfirm
+    chown -R $MYUSER:$MYUSER /opt/yay-git
+    cd /opt/yay-git && runuser -u $MYUSER -- makepkg -si --noconfirm
 
 
 fi
