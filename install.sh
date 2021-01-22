@@ -146,6 +146,22 @@ else
 
     #echo "/postinstall/postInstall.sh" >> ~.bashrc
 
+
+
+
+    pacman -S tilix --noconfirm
+    pacman -S chromium --noconfirm
+    pacman -S qbittorrent --noconfirm
+    pacman -S vlc --noconfirm
+    pacman -S dolphin --noconfirm
+    
+    pacman -S xorg sddm plasma
+    systemctl enable sddm
+
+    #
+    ##
+    ###
+    #### install yay & packages
     cd /opt && sudo git clone https://aur.archlinux.org/yay-git.git
     chown -R $MYUSER:$MYUSER /opt/yay-git
     cd /opt/yay-git && runuser -u $MYUSER -- makepkg -si --noconfirm
