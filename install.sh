@@ -155,7 +155,7 @@ else
     pacman -S vlc --noconfirm
     pacman -S dolphin --noconfirm
     
-    pacman -S xorg sddm plasma
+    pacman -S xorg sddm plasma --noconfirm
     systemctl enable sddm
 
     #
