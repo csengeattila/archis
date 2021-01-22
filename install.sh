@@ -155,26 +155,3 @@ else
 
 
 fi
-#
-##
-###
-#### End of the installation --------------------------------------------------------
-clear
-echo "Please select!"
-echo ""
-echo ""
-echo " Shutdown: press any key then enter"
-echo " Restart: just press enter"
-echo ""
-echo ""
-echo ""
-read -p "Restart or Shutdown? " PROGRAMEND
-
-if [ $PROGRAMEND  ]
-then
-	shutdown now
-else
-	reboot
-fi
-
-
