@@ -22,15 +22,17 @@ if [ "$(stat -c %d:%i /)" == "$(stat -c %d:%i /proc/1/root/.)" ]
 then
 	timedatectl set-ntp true
 
+
 	parted -s $DRIVEPATH \
 	mklabel gpt \
 	mkpart primary fat32 1 1G \
 	mkpart primary ext4 1G 100% \
 	set 1 boot on \
-	#   mkpart primary ext4 10G 100% \
+	# mkpart primary ext4 10G 100% \
+	
 
 	mkfs.fat -F32 /dev/vda1
-	mkfs.ext4 /dev/vda2
+	mkfs.ext4 -F /dev/vda2
 
 	mount "$DRIVEPATH"2 /mnt
 	mkdir /mnt/boot
@@ -51,19 +53,12 @@ then
 	genfstab -U /mnt >> /mnt/etc/fstab
 	cp $0 /mnt/install.sh
 	
-	# Things need to postinstall -----------------------------
-	cp archis/postInstall.sh /mnt/postinstall
-	
 	# Go into the chroot
 	arch-chroot /mnt ./install.sh chroot
-
-
-
-
 else
-	#
-	##
-	###---------
+	#----------------------------------------------------------------------
+	##-----------------------------------------------------------------------
+	###------------------------------------------------------------------------
 	#### CHROOT -----------------------------------------------------------------
 	if [ $KVM == false ]
     then
@@ -113,6 +108,7 @@ else
     echo ""
     passwd
 
+    # creating systemd boot ---------------------------------------------------------
     bootctl --path=/boot install
     rm /boot/loader/loader.conf
     echo "timeout	2" >> /boot/loader/loader.conf
@@ -124,6 +120,7 @@ else
     echo "options   root=/dev/vda2 rw" >> /boot/loader/entries/arch.conf
     systemctl enable NetworkManager
 
+    # creating user -------------------------------------------------------------------
     clear
     echo ""
     echo "### Please type "$MYUSER"s password ###"
@@ -131,20 +128,6 @@ else
     useradd -mG wheel $MYUSER
     passwd $MYUSER
     #EDITOR=vim visudo
-    #sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
-    sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
-
-    # preparing to post install -----------------------------------------------------
-    mv /postinstall/postInstall.service /etc/systemd/system
-    chmod +x /postinstall/postInstall.sh
-
-    # Autologin service -------------------------------------------------------------
-     /usr/lib/systemd/system/getty@.service 
-    #sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
-    #sed -i '38i\ExecStart=-/sbin/agetty -i -a '$MYUSER' %I $TERM' /usr/lib/systemd/system/getty@.service 
-
-
-    #echo "/postinstall/postInstall.sh" >> ~.bashrc
 
 
     # install yay & packages --------------------------------------------------------
@@ -156,6 +139,7 @@ else
 
     # install dwm -------------------------------------------------------------------
     pacman -S xorg --noconfirm
+    pacman -S xorg-xinit --noconfirm
     pacman -S libxft --noconfirm
     pacman -S webkit2gtk --noconfirm
     pacman -S nitrogen --noconfirm
@@ -174,17 +158,13 @@ else
     sed -i '54d' /home/$MYUSER/.xinitrc
     sed -i '55d' /home/$MYUSER/.xinitrc
 
-    echo "setxkbmap hu &" /home/$MYUSER/.xinitrc
-    echo "xsetroot -cursor_name left_ptr" /home/$MYUSER/.xinitrc
-    echo "picom -f &" /home/$MYUSER/.xinitrc
+    #echo "setxkbmap hu &" /home/$MYUSER/.xinitrc
+    #echo "xsetroot -cursor_name left_ptr" /home/$MYUSER/.xinitrc
+    #echo "picom -f &" /home/$MYUSER/.xinitrc
     echo "exec dwm" /home/$MYUSER/.xinitrc
-    echo "exec tilix" /home/$MYUSER/.xinitrc
+    #echo "exec tilix" /home/$MYUSER/.xinitrc
 
-    echo "if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -le 3 ]; then" >> /home/$MYUSER/.bash_profile
-    echo "	exec startx" >> /home/$MYUSER/.bash_profile
-    echo "fi" >> /home/$MYUSER/.bash_profile
-
-
+    
 
     # install recommended packages --------------------------------------------------
     pacman -S tilix --noconfirm
@@ -192,7 +172,23 @@ else
     # pacman -S qbittorrent --noconfirm
     pacman -S vlc --noconfirm
     pacman -S dolphin --noconfirm
+
     
+    # Autologin service -------------------------------------------------------------
+    #sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
+    #sed -i '38i\ExecStart=-/sbin/agetty -i -a '$MYUSER' %I $TERM' /usr/lib/systemd/system/getty@.service 
+
+
+    # AutostartX
+    #echo "if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -le 3 ]; then" >> /home/$MYUSER/.bash_profile
+    #echo "	exec startx" >> /home/$MYUSER/.bash_profile
+    #echo "fi" >> /home/$MYUSER/.bash_profile
+
+
+    # sudo --------------------------------------------------------------------------
+    #sed -i 's/# %wheel ALL=(ALL) ALL/%wheel ALL=(ALL) ALL/' /etc/sudoers
+    sed -i 's/# %wheel ALL=(ALL) NOPASSWD: ALL/%wheel ALL=(ALL) NOPASSWD: ALL/' /etc/sudoers
+
 
 
 
