@@ -140,8 +140,8 @@ else
 
     # Autologin service -------------------------------------------------------------
      /usr/lib/systemd/system/getty@.service 
-    sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
-    sed -i '38i\ExecStart=-/sbin/agetty -i -a '$MYUSER' %I $TERM' /usr/lib/systemd/system/getty@.service 
+    #sed -i 's/ExecStart=/# ExecStart=/' /usr/lib/systemd/system/getty@.service 
+    #sed -i '38i\ExecStart=-/sbin/agetty -i -a '$MYUSER' %I $TERM' /usr/lib/systemd/system/getty@.service 
 
 
     #echo "/postinstall/postInstall.sh" >> ~.bashrc
