@@ -147,24 +147,60 @@ else
     #echo "/postinstall/postInstall.sh" >> ~.bashrc
 
 
-
-
-    pacman -S tilix --noconfirm
-    pacman -S chromium --noconfirm
-    pacman -S qbittorrent --noconfirm
-    pacman -S vlc --noconfirm
-    pacman -S dolphin --noconfirm
-    
-    pacman -S xorg sddm plasma --noconfirm
-    systemctl enable sddm
-
-    #
-    ##
-    ###
-    #### install yay & packages
+    # install yay & packages --------------------------------------------------------
     cd /opt && sudo git clone https://aur.archlinux.org/yay-git.git
     chown -R $MYUSER:$MYUSER /opt/yay-git
     cd /opt/yay-git && runuser -u $MYUSER -- makepkg -si --noconfirm
+
+
+
+    # install dwm -------------------------------------------------------------------
+    pacman -S xorg-server --noconfirm
+    pacman -S xorg-xinit --noconfirm
+    pacman -S libx11 --noconfirm
+    pacman -S libxinerama --noconfirm
+    pacman -S libxft --noconfirm
+    pacman -S webkit2gtk --noconfirm
+
+
+    pacman -S xorg-xrandr --noconfirm
+    pacman -S xorg-xsettool --noconfirm
+    pacman -S nitrogen --noconfirm
+    pacman -S picom --noconfirm
+
+    cd /home/$MYUSER/ && git clone https://git.suckless.org/dwm
+    cd /home/$MYUSER/ && git clone https://git.suckless.org/st 
+    cd /home/$MYUSER/st && runuser -u $MYUSER sudo make clean install 
+    cd /home/$MYUSER/dwm && runuser -u $MYUSER sudo make clean install 
+
+
+    cp /etc/X11/xinit/xinitrc /home/$MYUSER/.xinitrc
+    sed -i '51d' /home/$MYUSER/.xinitrc
+    sed -i '52d' /home/$MYUSER/.xinitrc
+    sed -i '53d' /home/$MYUSER/.xinitrc
+    sed -i '54d' /home/$MYUSER/.xinitrc
+    sed -i '55d' /home/$MYUSER/.xinitrc
+
+    echo "setxkbmap hu &" /home/$MYUSER/.xinitrc
+    echo "xsetroot -cursor_name left_ptr" /home/$MYUSER/.xinitrc
+    echo "picom -f &" /home/$MYUSER/.xinitrc
+    echo "exec dwm" /home/$MYUSER/.xinitrc
+    echo "exec tilix" /home/$MYUSER/.xinitrc
+
+    echo "if [ -z "${DISPLAY}" ] && [ "${XDG_VTNR}" -le 3 ]; then" >> /home/$MYUSER/.bash_profile
+    echo "	exec startx" >> /home/$MYUSER/.bash_profile
+    echo "fi" >> /home/$MYUSER/.bash_profile
+
+
+
+    # install recommended packages --------------------------------------------------
+    pacman -S tilix --noconfirm
+    pacman -S chromium --noconfirm
+    # pacman -S qbittorrent --noconfirm
+    pacman -S vlc --noconfirm
+    pacman -S dolphin --noconfirm
+    
+
 
 
 fi
