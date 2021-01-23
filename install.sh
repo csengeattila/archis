@@ -155,16 +155,9 @@ else
 
 
     # install dwm -------------------------------------------------------------------
-    pacman -S xorg-server --noconfirm
-    pacman -S xorg-xinit --noconfirm
-    pacman -S libx11 --noconfirm
-    pacman -S libxinerama --noconfirm
+    pacman -S xorg --noconfirm
     pacman -S libxft --noconfirm
     pacman -S webkit2gtk --noconfirm
-
-
-    pacman -S xorg-xrandr --noconfirm
-    pacman -S xorg-xsettool --noconfirm
     pacman -S nitrogen --noconfirm
     pacman -S picom --noconfirm
 
